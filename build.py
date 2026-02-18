@@ -445,7 +445,7 @@ page = f'''<!DOCTYPE html>
     </div>
   </footer>
 
-  <script src="crossword.js"></script>
+  <script src="crossword.js?v=2"></script>
 
 </body>
 </html>'''
