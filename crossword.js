@@ -72,6 +72,7 @@
     inp.addEventListener('focus', function() {
       inputs.forEach(function(i) { i.parentElement.classList.remove('highlight'); });
       highlightWord(this);
+      this.select();
     });
   });
 
@@ -110,5 +111,6 @@
       inp.parentElement.classList.add('correct');
       inp.parentElement.classList.remove('wrong');
     });
+    checkWin();
   });
 })();
