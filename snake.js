@@ -35,7 +35,7 @@
     score = 0;
     alive = true;
     started = false;
-    speed = 130;
+    speed = 200;
     scoreEl.textContent = '0';
     placeFood();
     draw();
@@ -149,8 +149,8 @@
       scoreEl.textContent = score;
       placeFood();
       // Speed up slightly
-      if (speed > 60) {
-        speed -= 2;
+      if (speed > 80) {
+        speed -= 3;
         clearInterval(loop);
         loop = setInterval(step, speed);
       }
