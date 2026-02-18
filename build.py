@@ -66,6 +66,7 @@ def tag_label(tags):
     return tags[0] if tags else ''
 
 def extract_pull_quote(html):
+    """Find a compelling quoted sentence with attribution from the story HTML."""
     paragraphs = re.findall(r'<p>(.*?)</p>', html, re.DOTALL)
     if len(paragraphs) < 5:
         return None
@@ -73,12 +74,24 @@ def extract_pull_quote(html):
     end = 2 * len(paragraphs) // 3
     for p in paragraphs[start:end]:
         text = re.sub(r'<[^>]+>', '', p)
+        # Smart quotes with attribution — extract last proper name from attribution clause
+        for qpat in [r'\u201c([^\u201d]+)\u201d', r'"([^"]+)"']:
+            match = re.search(qpat + r'[^.]*?(?:said|told|wrote|added|explained|noted)\s+(.+?)\.', text)
+            if match and 40 < len(match.group(1)) < 250:
+                attr_clause = match.group(2).strip()
+                # Person name is the last two capitalized words before the period
+                name_match = re.search(r'([A-Z][a-z]+\s[A-Z][a-z]+)\s*$', attr_clause)
+                if name_match:
+                    return (match.group(1), name_match.group(1))
+    # Fallback: quote without clear attribution
+    for p in paragraphs[start:end]:
+        text = re.sub(r'<[^>]+>', '', p)
         match = re.search(r'\u201c([^\u201d]+)\u201d', text)
         if match and 40 < len(match.group(1)) < 250:
-            return match.group(1)
+            return (match.group(1), None)
         match = re.search(r'"([^"]+)"', text)
         if match and 40 < len(match.group(1)) < 250:
-            return match.group(1)
+            return (match.group(1), None)
     return None
 
 def should_have_dropcap(html):
@@ -95,8 +108,9 @@ def should_have_dropcap(html):
         return False
     return True
 
-def insert_pull_quote(html, quote):
-    pq_html = f'\n<blockquote class="pull-quote">\u201c{quote}\u201d</blockquote>\n'
+def insert_pull_quote(html, quote, speaker=None):
+    attr = f'<cite>\u2014 {speaker}</cite>' if speaker else ''
+    pq_html = f'\n<blockquote class="pull-quote">\u201c{quote}\u201d{attr}</blockquote>\n'
     pos = 0
     for i in range(4):
         pos = html.find('</p>', pos)
@@ -157,9 +171,10 @@ def story_block(s, is_lead=False):
           {cap}
         </figure>'''
 
-    quote = extract_pull_quote(body)
-    if quote:
-        body = insert_pull_quote(body, quote)
+    pq = extract_pull_quote(body)
+    if pq:
+        quote, speaker = pq
+        body = insert_pull_quote(body, quote, speaker)
 
     dropcap_cls = ' has-dropcap' if should_have_dropcap(body) else ''
 
@@ -323,6 +338,81 @@ page = f'''<!DOCTYPE html>
       </div>
     </section>
 
+    <!-- MINI CROSSWORD -->
+    <div class="container">
+      <div class="section-divider"><span>Mini Crossword</span></div>
+      <div class="crossword-section">
+        <p class="crossword-intro">Test your knowledge of this week&rsquo;s news. Tap a clue, then type your answer.</p>
+        <div class="crossword-layout">
+          <div class="crossword-grid-wrap">
+            <table class="crossword-grid" id="xword">
+              <tr>
+                <td><span class="cell-num">1</span><input type="text" maxlength="1" data-r="0" data-c="0" autocomplete="off"></td>
+                <td><span class="cell-num">2</span><input type="text" maxlength="1" data-r="0" data-c="1" autocomplete="off"></td>
+                <td><span class="cell-num">3</span><input type="text" maxlength="1" data-r="0" data-c="2" autocomplete="off"></td>
+                <td><span class="cell-num">4</span><input type="text" maxlength="1" data-r="0" data-c="3" autocomplete="off"></td>
+                <td><span class="cell-num">5</span><input type="text" maxlength="1" data-r="0" data-c="4" autocomplete="off"></td>
+              </tr>
+              <tr>
+                <td><input type="text" maxlength="1" data-r="1" data-c="0" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="1" data-c="1" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="1" data-c="2" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="1" data-c="3" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="1" data-c="4" autocomplete="off"></td>
+              </tr>
+              <tr>
+                <td><input type="text" maxlength="1" data-r="2" data-c="0" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="2" data-c="1" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="2" data-c="2" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="2" data-c="3" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="2" data-c="4" autocomplete="off"></td>
+              </tr>
+              <tr>
+                <td><input type="text" maxlength="1" data-r="3" data-c="0" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="3" data-c="1" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="3" data-c="2" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="3" data-c="3" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="3" data-c="4" autocomplete="off"></td>
+              </tr>
+              <tr>
+                <td><input type="text" maxlength="1" data-r="4" data-c="0" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="4" data-c="1" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="4" data-c="2" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="4" data-c="3" autocomplete="off"></td>
+                <td><input type="text" maxlength="1" data-r="4" data-c="4" autocomplete="off"></td>
+              </tr>
+            </table>
+            <div class="crossword-actions">
+              <button id="xword-check" type="button">Check</button>
+              <button id="xword-reveal" type="button">Reveal</button>
+            </div>
+          </div>
+          <div class="crossword-clues">
+            <div class="clue-group">
+              <h4>Across</h4>
+              <ol>
+                <li data-dir="across" data-idx="0" class="clue">Browns ___ is switching to a reservation system</li>
+                <li data-dir="across" data-idx="1" class="clue">Winter weather ___ issued for Coast Range foothills</li>
+                <li data-dir="across" data-idx="2" class="clue">Local news ___ covering Forest Grove and Banks</li>
+                <li data-dir="across" data-idx="3" class="clue">The edition of the newspaper you hold in your hands</li>
+                <li data-dir="across" data-idx="4" class="clue">&ldquo;___ of the City&rdquo; address at Theatre in the Grove</li>
+              </ol>
+            </div>
+            <div class="clue-group">
+              <h4>Down</h4>
+              <ol>
+                <li data-dir="down" data-idx="0" class="clue">Tillamook Forest off-highway vehicle sites</li>
+                <li data-dir="down" data-idx="1" class="clue">Type of weather warning for foothills near Banks</li>
+                <li data-dir="down" data-idx="2" class="clue">News organizations, collectively</li>
+                <li data-dir="down" data-idx="3" class="clue">To publish, in newspaper terms</li>
+                <li data-dir="down" data-idx="4" class="clue">Oregon is one</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="section-divider"><span>Features &amp; Columns</span></div>
       {second_half_html}
@@ -354,6 +444,8 @@ page = f'''<!DOCTYPE html>
       </div>
     </div>
   </footer>
+
+  <script src="crossword.js"></script>
 
 </body>
 </html>'''
