@@ -391,7 +391,7 @@ page = f'''<!DOCTYPE html>
             <div class="clue-group">
               <h4>Across</h4>
               <ol>
-                <li data-dir="across" data-idx="0" class="clue">Browns ___ is switching to a reservation system</li>
+                <li data-dir="across" data-idx="0" class="clue">Outdoor sites like Browns Camp and Reehers Camp</li>
                 <li data-dir="across" data-idx="1" class="clue">Winter weather ___ issued for Coast Range foothills</li>
                 <li data-dir="across" data-idx="2" class="clue">Local news ___ covering Forest Grove and Banks</li>
                 <li data-dir="across" data-idx="3" class="clue">The edition of the newspaper you hold in your hands</li>
