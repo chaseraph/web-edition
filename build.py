@@ -338,75 +338,23 @@ page = f'''<!DOCTYPE html>
       </div>
     </section>
 
-    <!-- MINI CROSSWORD -->
+    <!-- SNAKE GAME -->
     <div class="container">
-      <div class="section-divider"><span>Mini Crossword</span></div>
-      <div class="crossword-section">
-        <p class="crossword-intro">Test your knowledge of this week&rsquo;s news. Tap a clue, then type your answer.</p>
-        <div class="crossword-layout">
-          <div class="crossword-grid-wrap">
-            <table class="crossword-grid" id="xword">
-              <tr>
-                <td><span class="cell-num">1</span><input type="text" maxlength="1" data-r="0" data-c="0" autocomplete="off"></td>
-                <td><span class="cell-num">2</span><input type="text" maxlength="1" data-r="0" data-c="1" autocomplete="off"></td>
-                <td><span class="cell-num">3</span><input type="text" maxlength="1" data-r="0" data-c="2" autocomplete="off"></td>
-                <td><span class="cell-num">4</span><input type="text" maxlength="1" data-r="0" data-c="3" autocomplete="off"></td>
-                <td><span class="cell-num">5</span><input type="text" maxlength="1" data-r="0" data-c="4" autocomplete="off"></td>
-              </tr>
-              <tr>
-                <td><input type="text" maxlength="1" data-r="1" data-c="0" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="1" data-c="1" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="1" data-c="2" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="1" data-c="3" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="1" data-c="4" autocomplete="off"></td>
-              </tr>
-              <tr>
-                <td><input type="text" maxlength="1" data-r="2" data-c="0" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="2" data-c="1" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="2" data-c="2" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="2" data-c="3" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="2" data-c="4" autocomplete="off"></td>
-              </tr>
-              <tr>
-                <td><input type="text" maxlength="1" data-r="3" data-c="0" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="3" data-c="1" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="3" data-c="2" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="3" data-c="3" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="3" data-c="4" autocomplete="off"></td>
-              </tr>
-              <tr>
-                <td><input type="text" maxlength="1" data-r="4" data-c="0" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="4" data-c="1" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="4" data-c="2" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="4" data-c="3" autocomplete="off"></td>
-                <td><input type="text" maxlength="1" data-r="4" data-c="4" autocomplete="off"></td>
-              </tr>
-            </table>
-            <div class="crossword-actions">
-              <button id="xword-check" type="button">Check</button>
-              <button id="xword-reveal" type="button">Reveal</button>
-            </div>
+      <div class="section-divider"><span>Arcade Break</span></div>
+      <div class="snake-section">
+        <p class="snake-intro">Take a break from the news. Arrow keys or swipe to play.</p>
+        <div class="snake-wrap">
+          <div class="snake-hud">
+            <span class="snake-score" id="snake-score">0</span>
+            <span class="snake-best" id="snake-best">Best: 0</span>
           </div>
-          <div class="crossword-clues">
-            <div class="clue-group">
-              <h4>Across</h4>
-              <ol>
-                <li data-dir="across" data-idx="0" class="clue">Outdoor sites like Browns Camp and Reehers Camp</li>
-                <li data-dir="across" data-idx="1" class="clue">Winter weather ___ issued for Coast Range foothills</li>
-                <li data-dir="across" data-idx="2" class="clue">Local news ___ covering Forest Grove and Banks</li>
-                <li data-dir="across" data-idx="3" class="clue">The edition of the newspaper you hold in your hands</li>
-                <li data-dir="across" data-idx="4" class="clue">&ldquo;___ of the City&rdquo; address at Theatre in the Grove</li>
-              </ol>
-            </div>
-            <div class="clue-group">
-              <h4>Down</h4>
-              <ol>
-                <li data-dir="down" data-idx="0" class="clue">Tillamook Forest off-highway vehicle sites</li>
-                <li data-dir="down" data-idx="1" class="clue">Type of weather warning for foothills near Banks</li>
-                <li data-dir="down" data-idx="2" class="clue">News organizations, collectively</li>
-                <li data-dir="down" data-idx="3" class="clue">To publish, in newspaper terms</li>
-                <li data-dir="down" data-idx="4" class="clue">Oregon is one</li>
-              </ol>
+          <canvas id="snake-canvas" width="400" height="400"></canvas>
+          <div class="snake-controls">
+            <div class="snake-dpad">
+              <button id="snake-up" type="button" aria-label="Up">&uarr;</button>
+              <button id="snake-left" type="button" aria-label="Left">&larr;</button>
+              <button id="snake-down" type="button" aria-label="Down">&darr;</button>
+              <button id="snake-right" type="button" aria-label="Right">&rarr;</button>
             </div>
           </div>
         </div>
@@ -445,7 +393,7 @@ page = f'''<!DOCTYPE html>
     </div>
   </footer>
 
-  <script src="crossword.js?v=2"></script>
+  <script src="snake.js"></script>
 
 </body>
 </html>'''
